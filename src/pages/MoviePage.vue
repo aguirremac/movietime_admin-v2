@@ -10,14 +10,13 @@
         name="title" 
         placeholder="Movie Title"
         :rules="[requireVal]" />
-      <q-input v-model="form.movieId" name="movieId" placeholder="Movie Id" />
+      <q-input v-model="form.movieId" name="movieId" placeholder="Movie Id" :rules="[requireVal]"/>
       <p class="q-mt-lg q-mb-none text-grey ">Released Date</p>
       <q-input
         class="q-mt-none"
         v-model="form.released"
         type="date"
         name="year"
-        
         :rules="[requireVal]"
       />
       <q-input
@@ -68,7 +67,7 @@
         label="Add Movie" 
         type="submit" 
         color="green"
-        :disabled="isFormValid" />
+        />
     </q-form>
 
     <q-table
@@ -96,11 +95,11 @@ const form = ref({
   
 });
 
-const requireVal = val => !!val || 'Invalid Input'
+c
 
 
 
-const movies = [
+const movies = ref([
   {
     title: 'Doctor Strange in the Multiverse of Madness',
     movieId: 'movie1',
@@ -124,7 +123,7 @@ const movies = [
     posterLink: 'bad.png',
   },
 
-];
+]);
 
 const columns = [
   { name: 'Title', field: 'title', align: 'left', label: 'Title' },
@@ -139,20 +138,14 @@ const columns = [
 
 const loading = false;
 
-console.log(form.value)
 
-const isFormValid = () =>{
-  for(const key of form.value){
-    if(form.value[key] !== null && form.value[key] !== '' ){
-       return false
-    }
-  } return true
-    
-}
+
+
 
 const submitForm = e => {
   e.preventDefault();
-  movies.unshift({
+  if(parseInt(form.value.released.slice(0,4))) {
+  movies.value.unshift({
     title: form.value.title,
     movieId: form.value.movieId,
     year: parseInt(form.value.released.slice(0,4)) ,
@@ -163,7 +156,7 @@ const submitForm = e => {
     rTRating: form.value.rTRating ,
     posterLink: form.value.posterLink ,
   });
- 
+}
 }
 
 

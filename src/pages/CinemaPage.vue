@@ -5,11 +5,14 @@
       action=""
       method=""
       @submit="submitForm"
+      
     >
       <q-input
         name="location"
         placeholder="Cinema Location"
         v-model="form.location"
+        :rules="[requireVal]"
+        
       />
       <div class="q-mt-md"> 
         <p>Cinema Numbers</p>
@@ -62,7 +65,11 @@ const form = ref({
 
 // const requireValue = (val) => (val && val.length > 0) || 'Invalid Input'
 
-const cinemaData = [
+const requireVal = val => val && val.length > 0 || 'Invalid Input'
+
+
+
+const cinemaData = ref([
   {
     location: 'SM Cubao',
     cinemaPosterURL: 'smcinema.png',
@@ -73,21 +80,21 @@ const cinemaData = [
     cinemaPosterURL: 'smcinema.png',
     cinemaNum: [1, 2, 3],
   },
-];
+]);
 
 const submitForm = (event) => {
   event.preventDefault();
 
-  cinemaData.unshift({
+  cinemaData.value.unshift({
     location: form.value.location,
     cinemaNum: form.value.cinemaNum,
     cinemaPosterURL: form.value.cinemaPosterURL,
   });
   console.log(cinemaData);
 
-  form.value.location = '';
-  form.value.cinemaNum = [];
-  form.value.cinemaPosterURL = '/assets/smcinema.png';
+  // form.value.location = '';
+  // form.value.cinemaNum = [];
+  // form.value.cinemaPosterURL = '/assets/smcinema.png';
 };
 
 const columns = [
@@ -103,6 +110,7 @@ const columns = [
     field: 'cinemaNum',
     label: 'Cinema Number',
     align: 'center',
+    format:(val => val.join(' , '))
   },
   {
     name: 'Icon',

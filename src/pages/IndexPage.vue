@@ -1,6 +1,7 @@
 <template>
   <q-page class="row items-center justify-evenly text-brand">
-    <q-form ref="showingForm"
+    <q-form
+     
       class="column q-px-xl q-py-md shadow-2 bg-blue-1"
       style="max-width: 500px"
       action=""
@@ -30,52 +31,60 @@
         label="Cinema Number"
         :rules="[requireVal]"
       />
-     
+
       <p class="text-green q-mt-md q-mb-none">SHOWING DURATION</p>
       <div class="flex items-center">
-        <q-input 
-        @click="showCalendarRange = !showCalendarRange"
-        color="grey-3"
-        label="From"
-        class="q-pt-sm"
-        v-model="form.duration.from" 
-        readonly
-        :rules="[requireVal]" />
-        <q-input 
-        @click="showCalendarRange = !showCalendarRange"
-        color="grey-3"
-        label="To"
-        class="q-pt-sm"
-        v-model="form.duration.to" 
-        readonly
-        :rules="[requireVal]" />
+        <q-input
+          @click="showCalendarRange = !showCalendarRange"
+          color="grey-3"
+          label="From"
+          class="q-pt-sm"
+          v-model="form.duration.from"
+          readonly
+          :rules="[requireVal]"
+        />
+        <q-input
+          @click="showCalendarRange = !showCalendarRange"
+          color="grey-3"
+          label="To"
+          class="q-pt-sm"
+          v-model="form.duration.to"
+          readonly
+          :rules="[requireVal]"
+        />
 
         <q-popup-proxy>
-          <div v-if="showCalendarRange" class="q-mt-md">
-        <q-date v-model="form.duration" range />
-      </div>
+          <div  class="q-mt-md">
+            <q-date v-model="form.duration" range />
+          </div>
         </q-popup-proxy>
-          <!-- <q-icon class="q-pl-xl" size="30px" name="event" color="green"
+        <!-- <q-icon class="q-pl-xl" size="30px" name="event" color="green"
           @click="showCalendarRange = !showCalendarRange" /> -->
-       
       </div>
-
-      
 
       <div class="q-mt-xl">
         <p>Time Slots</p>
-        <div >
+        <div>
           <q-option-group
-          class="row"
-          :options="timeSlotOptions"
-          type="checkbox"
-          v-model="form.timeSlot"
-          :rules="[requireValChecked]"
+            class="row"
+            :options="timeSlotOptions"
+            type="checkbox"
+            v-model="form.timeSlot"
+            :rules="[requireValChecked]"
           />
         </div>
       </div>
 
-      <q-btn class="q-mt-xl" label="ADD" type="submit" color="green" :disabled="!formValid" />
+      <q-btn
+        class="q-mt-xl"
+        label="ADD"
+        type="submit"
+        color="green"
+        :disabled="formValid"
+      />
+
+      <q-btn @click="resetForm"  label="Reset" type="reset" color="primary" flat class="q-mt-md q-ml-sm" />
+
     </q-form>
 
     <q-table
@@ -88,6 +97,7 @@
 </template>
 
 <script setup>
+
 import { ref } from 'vue';
 
 const form = ref({
@@ -98,35 +108,25 @@ const form = ref({
   timeSlot: [],
 });
 
-const formValid = () => {
-  const keys = Object.keys(form)
-  for (const key of keys) {
-    if (form[key] === null || form[key] === '' || form[key].length === 0 || Object.keys(form[key]).length === 0) {
-      return true
-    }
-  }
-  return false
-}
-
 
 //cinemanum options
 const options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const timeSlotOptions = [
-  {label: '09:00', value: '09:00' },
-  {label: '11:00', value: '11:00' },
-  {label: '13:00', value: '13:00' },
-  {label: '15:00', value: '15:00' },
-  {label: '18:00', value: '18:00' },
-  {label: '20:00', value: '20:00' },
-  ]
+  { label: '09:00', value: '09:00' },
+  { label: '11:00', value: '11:00' },
+  { label: '13:00', value: '13:00' },
+  { label: '15:00', value: '15:00' },
+  { label: '18:00', value: '18:00' },
+  { label: '20:00', value: '20:00' },
+];
 
-const showCalendarRange = ref(false);
 
-const requireVal = val => !!val || 'Invalid Input'
-const requireValChecked = val => val.length > 0 || 'Please select one'
 
-const showingData = [
+const requireVal = (val) => !!val || 'Invalid Input';
+const requireValChecked = (val) => val.length > 0 || 'Please select one';
+
+const showingData = ref([
   {
     title: 'Doctor Strange',
     location: 'SM Aura',
@@ -141,7 +141,7 @@ const showingData = [
     duration: { from: '2023/03/05', to: '2023/03/18' },
     timeSlot: ['09:00', '11:00', '13:00'],
   },
-];
+]);
 
 //fetch movie title
 
@@ -150,21 +150,24 @@ const showingData = [
 
 const submitForm = (event) => {
   event.preventDefault();
-  showingData.unshift({
+  showingData.value.unshift({
     title: form.value.title,
     location: form.value.location,
     cinemaNum: form.value.cinemaNum,
     duration: form.value.duration,
     timeSlot: form.value.timeSlot.sort(),
   });
-  
-  // form.value.title = '';
-  // form.value.location = '';
-  // form.value.cinemaNum = null;
-  // form.value.duration = {};
-  // form.value.timeSlot = [];
-  
+
+ 
 };
+
+const resetForm = ()=> {
+   form.value.title = '';
+  form.value.location = '';
+  form.value.cinemaNum = null;
+  form.value.duration = {};
+  form.value.timeSlot = [];
+}
 
 const columns = [
   {
