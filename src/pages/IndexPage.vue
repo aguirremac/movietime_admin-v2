@@ -30,13 +30,7 @@
         label="Cinema Number"
         :rules="[requireVal]"
       />
-      <!-- <q-input
-        type="number"
-        name="cinemaNum"
-        placeholder="Cinema Number"
-        v-model="form.cinemaNum"
-        required
-      /> -->
+     
       <p class="text-green q-mt-md q-mb-none">SHOWING DURATION</p>
       <div class="flex items-center">
         <q-input 
@@ -56,29 +50,32 @@
         readonly
         :rules="[requireVal]" />
 
-        
+        <q-popup-proxy>
+          <div v-if="showCalendarRange" class="q-mt-md">
+        <q-date v-model="form.duration" range />
+      </div>
+        </q-popup-proxy>
           <!-- <q-icon class="q-pl-xl" size="30px" name="event" color="green"
           @click="showCalendarRange = !showCalendarRange" /> -->
        
       </div>
 
-      <div v-if="showCalendarRange" class="q-mt-md">
-        <q-date v-model="form.duration" range />
-      </div>
+      
 
       <div class="q-mt-xl">
         <p>Time Slots</p>
-        <div>
-          <q-checkbox v-model="form.timeSlot" label="09:00" val="09:00" />
-          <q-checkbox v-model="form.timeSlot" label="11:00" val="11:00" />
-          <q-checkbox v-model="form.timeSlot" label="13:00" val="13:00" />
-          <q-checkbox v-model="form.timeSlot" label="16:00" val="16:00" />
-          <q-checkbox v-model="form.timeSlot" label="18:00" val="18:00" />
-          <q-checkbox v-model="form.timeSlot" label="20:00" val="20:00" />
+        <div >
+          <q-option-group
+          class="row"
+          :options="timeSlotOptions"
+          type="checkbox"
+          v-model="form.timeSlot"
+          :rules="[requireValChecked]"
+          />
         </div>
       </div>
 
-      <q-btn class="q-mt-xl" label="ADD" type="submit" color="green" />
+      <q-btn class="q-mt-xl" label="ADD" type="submit" color="green" :disabled="!formValid" />
     </q-form>
 
     <q-table
@@ -101,12 +98,33 @@ const form = ref({
   timeSlot: [],
 });
 
+const formValid = () => {
+  const keys = Object.keys(form)
+  for (const key of keys) {
+    if (form[key] === null || form[key] === '' || form[key].length === 0 || Object.keys(form[key]).length === 0) {
+      return true
+    }
+  }
+  return false
+}
+
+
 //cinemanum options
 const options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const timeSlotOptions = [
+  {label: '09:00', value: '09:00' },
+  {label: '11:00', value: '11:00' },
+  {label: '13:00', value: '13:00' },
+  {label: '15:00', value: '15:00' },
+  {label: '18:00', value: '18:00' },
+  {label: '20:00', value: '20:00' },
+  ]
 
 const showCalendarRange = ref(false);
 
 const requireVal = val => !!val || 'Invalid Input'
+const requireValChecked = val => val.length > 0 || 'Please select one'
 
 const showingData = [
   {
